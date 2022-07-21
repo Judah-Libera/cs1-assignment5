@@ -101,42 +101,46 @@ void freemem(trie* t) // recursive call to go through entire trie then freeing o
 
 int main()
 {
-	FILE* ifp = fopen("in.txt", "r");
 	FILE* ofp = fopen("out.txt", "w");
-	int command, count, mainloop;
+	int command, count;
 	int hf = 0, index = 0;
 	char word[MAXLEN];
 	trie* maintrie = init();
 
-	fscanf(ifp, "%d", &mainloop);
-	for (int k = 0; k < mainloop; k++) // runs for each file line
+	printf("Program which searches a user created trie for the character most likely to come next based on following characters in given words.\n");
+	while (1) // runs till user ends
 	{
-		fscanf(ifp, "%d ", &command); //insert or query
+		printf("Enter 1 to insert a word. Enter 2 to predict a character. Enter 3 to exit program.\n");
+		scanf("%d", &command); //insert or query
+		if (command == 3)
+			break;
 		if (command == 1)
 		{
-			fscanf(ifp, "%s %d", word, &count);
+			printf("Enter a word followed by an amount of that word to insert.\n");
+			scanf("%s %d", word, &count);
 			insert(maintrie, word, count, 0);
 		}
 		else
 		{
-			fscanf(ifp, "%s", word);
+			printf("Enter word or partial word to search for.\n");
+			scanf("%s", word);
 			char* freethis = query(maintrie, word, 0); //temp variable to hold the string, is freed immediatly after use
 			if (freethis == NULL)
 			{
-				printf("unknown word\n");
-				fprintf(ofp, "unknown word\n");
+				printf("no words matching this input with my characters\n");
+				fprintf(ofp, "no words matching this input with my characters\n");
 			}
 			else
 			{
-				printf("%s\n", freethis);
-				fprintf(ofp, "%s\n", freethis);
+				printf("%s comes most often after given word\n", freethis);
+				fprintf(ofp, "%s comes most often after given word\n", freethis);
 			}
 			free(freethis);
 		}
+		printf("\n");
 	}
 
 	freemem(maintrie); //frees
-	fclose(ifp);
 	fclose(ofp);
 	return 0;
 }
